@@ -105,9 +105,18 @@ export default function HeroCarousel({ slides = [] }: { slides?: HeroSlide[] }) 
                         className="absolute inset-0 w-full h-full"
                     >
                         {currentSlide.type === 'fullBackground' ? (
-                            <div className={`w-full h-full relative bg-gradient-to-br ${currentSlide.bgColor || 'from-blue-900 to-slate-900'}`}>
-                                <div className="h-full flex items-center px-4 sm:px-6 md:px-12 lg:px-16 py-6 sm:py-8 md:py-12">
-                                    <div className="text-white space-y-3 sm:space-y-4 md:space-y-6 max-w-lg lg:max-w-xl z-20">
+                            <div className="w-full h-full relative">
+                                <img
+                                    src={currentSlide.imageUrl}
+                                    alt={currentSlide.title}
+                                    className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                                    draggable={false}
+                                />
+                                <div className={`absolute inset-0 bg-gradient-to-r ${currentSlide.bgColor ? 'from-black/80 via-black/40 to-transparent' : 'from-black/80 via-black/40 to-transparent'}`} />
+                                <div className="absolute inset-0 bg-black/20" />
+
+                                <div className="h-full flex items-center px-4 sm:px-6 md:px-12 lg:px-16 py-6 sm:py-8 md:py-12 relative z-10">
+                                    <div className="text-white space-y-3 sm:space-y-4 md:space-y-6 max-w-lg lg:max-w-xl">
                                         <motion.h1
                                             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
                                             className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight"
@@ -118,7 +127,7 @@ export default function HeroCarousel({ slides = [] }: { slides?: HeroSlide[] }) 
                                         </motion.h1>
                                         <motion.p
                                             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
-                                            className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-100 leading-relaxed"
+                                            className="text-sm sm:text-base md:text-lg lg:text-xl text-gray-100 leading-relaxed drop-shadow-md"
                                         >
                                             {currentSlide.description}
                                         </motion.p>
@@ -132,15 +141,6 @@ export default function HeroCarousel({ slides = [] }: { slides?: HeroSlide[] }) 
                                             </motion.div>
                                         )}
                                     </div>
-                                </div>
-
-                                <div className="absolute right-0 bottom-0 w-[55%] sm:w-[50%] md:w-[45%] lg:w-[40%] h-[55%] sm:h-[60%] md:h-[70%] lg:h-[75%]">
-                                    <img
-                                        src={currentSlide.imageUrl}
-                                        alt={currentSlide.title}
-                                        className="object-contain object-bottom absolute inset-0 w-full h-full pointer-events-none"
-                                        draggable={false}
-                                    />
                                 </div>
                             </div>
                         ) : (

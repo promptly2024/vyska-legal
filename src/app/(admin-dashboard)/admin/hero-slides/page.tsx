@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ImageUpload } from "@/components/ui/image-upload";
 import {
     Select,
     SelectContent,
@@ -30,6 +31,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+
 
 interface HeroSlide {
     id: string;
@@ -59,6 +61,7 @@ export default function HeroSlidesPage() {
     const [loading, setLoading] = useState(true);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingSlide, setEditingSlide] = useState<HeroSlide | null>(null);
+    const [uploadType, setUploadType] = useState<"upload" | "url">("upload");
 
     // Form State
     const [formData, setFormData] = useState({
@@ -150,6 +153,7 @@ export default function HeroSlidesPage() {
 
     const resetForm = () => {
         setEditingSlide(null);
+        setUploadType("upload");
         setFormData({
             title: "",
             highlight: "",
@@ -166,6 +170,7 @@ export default function HeroSlidesPage() {
 
     const openEdit = (slide: HeroSlide) => {
         setEditingSlide(slide);
+        setUploadType("upload"); // Default to upload view, but user can switch
         setFormData({
             title: slide.title,
             highlight: slide.highlight || "",
@@ -238,18 +243,60 @@ export default function HeroSlidesPage() {
                             <h3 className="font-semibold text-gray-900">Appearance & Media</h3>
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2 col-span-2">
-                                    <Label htmlFor="imageUrl">Image URL <span className="text-red-500">*</span></Label>
-                                    <Input
-                                        id="imageUrl"
-                                        value={formData.imageUrl}
-                                        onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
-                                        required
-                                        placeholder="/images/hero-1.jpg or External URL"
-                                    />
-                                    {formData.imageUrl && (
-                                        <div className="mt-2 relative h-32 w-full bg-gray-100 rounded-md overflow-hidden border">
-                                            {/* eslint-disable-next-line @next/next/no-img-element */}
-                                            <img src={formData.imageUrl} alt="Preview" className="h-full w-full object-contain" />
+                                    <Label className="mb-2 block">Image Source</Label>
+                                    <div className="flex gap-2 mb-4">
+                                        <Button
+                                            type="button"
+                                            variant={uploadType === 'upload' ? 'default' : 'outline'}
+                                            onClick={() => setUploadType('upload')}
+                                            className="w-1/2"
+                                        >
+                                            Check/Upload Image
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant={uploadType === 'url' ? 'default' : 'outline'}
+                                            onClick={() => setUploadType('url')}
+                                            className="w-1/2"
+                                        >
+                                            Image URL
+                                        </Button>
+                                    </div>
+
+                                    {uploadType === 'upload' ? (
+                                        <div className="bg-white p-4 rounded-md border">
+                                            <ImageUpload
+                                                value={formData.imageUrl}
+                                                onChange={(url) => setFormData({ ...formData, imageUrl: url || "" })}
+                                                label="Upload Hero Image"
+                                            />
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2 animate-in fade-in zoom-in duration-300">
+                                            <Input
+                                                id="imageUrl"
+                                                value={formData.imageUrl}
+                                                onChange={e => setFormData({ ...formData, imageUrl: e.target.value })}
+                                                required={uploadType === 'url'}
+                                                placeholder="https://example.com/image.jpg"
+                                            />
+                                            {formData.imageUrl && (
+                                                <div className="mt-2 relative h-40 w-full bg-gray-100 rounded-md overflow-hidden border">
+                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                    <img
+                                                        src={formData.imageUrl}
+                                                        alt="Preview"
+                                                        className="h-full w-full object-contain"
+                                                        onError={(e) => {
+                                                            (e.target as HTMLImageElement).style.display = 'none';
+                                                            const parent = (e.target as HTMLImageElement).parentElement;
+                                                            if (parent) {
+                                                                parent.innerHTML = '<div class="flex items-center justify-center h-full text-red-500 text-xs">Invalid Image URL</div>';
+                                                            }
+                                                        }}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>

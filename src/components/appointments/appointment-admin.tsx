@@ -327,6 +327,17 @@ export default function AppointmentAdmin() {
         setSelected(new Set())
     }
 
+    const toggleSelectAll = () => {
+        setSelected((prev) => {
+            const allSelected = generated.every((s) => prev.has(s))
+            if (allSelected) {
+                return new Set()
+            } else {
+                return new Set(generated)
+            }
+        })
+    }
+
     return (
         <div className="w-full flex flex-col gap-6 px-2 sm:px-4 md:px-8 py-4 overflow-x-auto">
             {actionLoading && (
@@ -384,37 +395,24 @@ export default function AppointmentAdmin() {
                         >
                             Generate slots
                         </Button>
-                        <Button
-                            onClick={createSelected}
-                            variant="secondary"
-                            size="sm"
-                            disabled={selected.size === 0 || actionLoading}
-                            className="min-w-[140px] flex items-center gap-2"
-                            title={selected.size === 0 ? "Select at least one slot" : "Create selected slots"}
-                            aria-label="Create selected slots"
-                        >
-                            {actionLoading && <Spinner className="w-4 h-4" />}
-                            Create selected (
-                            {selected.size} slot{selected.size > 1 ? "s" : ""}
-                            {startDate && endDate && startDate !== endDate && selected.size > 0
-                                ? ` for ${Math.max(
-                                    0,
-                                    Math.ceil(
-                                        (new Date(endDate).getTime() - new Date(startDate).getTime()) /
-                                        (1000 * 60 * 60 * 24)
-                                    ) + 1
-                                )
-                                } days)`
-                                : ")"}
-                        </Button>
                     </div>
                     {generated.length > 0 && (
                         <>
                             <Separator />
-                            <p className="text-xs text-muted-foreground">
-                                Showing time slots for a single day. When you Create selected, these times will be created for each date
-                                in the selected date range.
-                            </p>
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                                <p className="text-xs text-muted-foreground">
+                                    Showing time slots for a single day. When you Create selected, these times will be created for each date
+                                    in the selected date range.
+                                </p>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={toggleSelectAll}
+                                    className="h-7 text-xs whitespace-nowrap"
+                                >
+                                    {generated.every((s) => selected.has(s)) ? "Deselect All" : "Select All"}
+                                </Button>
+                            </div>
                             <div className="w-full overflow-x-auto">
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mt-2 min-w-[320px]">
                                     {generated.map((slot) => (
@@ -432,6 +430,32 @@ export default function AppointmentAdmin() {
                                         </button>
                                     ))}
                                 </div>
+                            </div>
+
+                            <div className="flex justify-end pt-4 border-t mt-4">
+                                <Button
+                                    onClick={createSelected}
+                                    variant="default"
+                                    size="default"
+                                    disabled={selected.size === 0 || actionLoading}
+                                    className="min-w-[140px] flex items-center gap-2"
+                                    title={selected.size === 0 ? "Select at least one slot" : "Create selected slots"}
+                                    aria-label="Create selected slots"
+                                >
+                                    {actionLoading && <Spinner className="w-4 h-4" />}
+                                    Create selected (
+                                    {selected.size} slot{selected.size > 1 ? "s" : ""}
+                                    {startDate && endDate && startDate !== endDate && selected.size > 0
+                                        ? ` for ${Math.max(
+                                            0,
+                                            Math.ceil(
+                                                (new Date(endDate).getTime() - new Date(startDate).getTime()) /
+                                                (1000 * 60 * 60 * 24)
+                                            ) + 1
+                                        )
+                                        } days)`
+                                        : ")"}
+                                </Button>
                             </div>
                         </>
                     )}

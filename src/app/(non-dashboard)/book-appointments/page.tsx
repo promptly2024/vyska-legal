@@ -6,6 +6,7 @@ import useSWR from "swr"
 import { toast } from "sonner"
 import { format } from "date-fns"
 import { useRouter } from "next/navigation"
+import { Loader, Check, X, ShieldCheck } from "lucide-react"
 
 import { Calendar, CalendarDayButton } from "@/components/ui/calendar"
 import { Button } from "@/components/ui/button"
@@ -222,14 +223,27 @@ export default function BookAppointmentsPage() {
         <main className="mx-auto max-w-6xl p-4 sm:p-6 relative">
             {/* Overlay for payment processing */}
             {paymentStatus === "processing" && (
-                <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm">
-                    <div className="flex flex-col items-center bg-white rounded-lg shadow-lg px-6 py-8 max-w-xs w-full mx-2">
-                        <svg className="animate-spin h-8 w-8 text-blue-600 mb-4" viewBox="0 0 24 24" fill="none">
-                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
-                        </svg>
-                        <span className="text-lg font-medium text-blue-700 text-center">Processing your payment...</span>
-                        <span className="text-sm text-muted-foreground mt-2 text-center">Please do not close or refresh this page.</span>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-card w-full max-w-md mx-4 rounded-xl border shadow-xl p-8 flex flex-col items-center justify-center space-y-6 text-center animate-in zoom-in-95 duration-200">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-blue-500/20 rounded-full animate-ping" />
+                            <div className="relative bg-blue-50 rounded-full p-4">
+                                <Loader className="h-8 w-8 text-blue-600 animate-spin" />
+                            </div>
+                        </div>
+                        <div className="space-y-2">
+                            <h3 className="text-xl font-semibold tracking-tight text-foreground">Processing Payment</h3>
+                            <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                                Please wait while we securely process your transaction. Do not close or refresh this page.
+                            </p>
+                        </div>
+                        <div className="w-full bg-secondary/50 h-2 rounded-full overflow-hidden">
+                            <div className="h-full bg-blue-600 w-2/3 animate-[progress_1s_ease-in-out_infinite]" style={{ width: '100%', transformOrigin: '0% 50%' }} />
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground/80">
+                            <ShieldCheck className="w-3.5 h-3.5" />
+                            <span>Secure Payment Gateway</span>
+                        </div>
                     </div>
                 </div>
             )}
@@ -265,7 +279,7 @@ export default function BookAppointmentsPage() {
                     </div>
                 </div>
             )}
-            
+
             <div className={paymentStatus !== "idle" ? "pointer-events-none opacity-50 select-none" : ""}>
                 <header className="mb-6">
                     <h1 className="text-balance text-center text-3xl font-bold" title="Book an Appointment">Book an Appointment</h1>
