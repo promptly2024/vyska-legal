@@ -20,110 +20,109 @@ interface Research {
 }
 
 export default function ResearchManagementPage() {
-    const router = useRouter();
-    const [researchPapers, setResearchPapers] = useState<Research[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-    const [searchQuery, setSearchQuery] = useState("");
-    const [filter, setFilter] = useState("all");
-    const [sortBy, setSortBy] = useState("createdAt");
-    const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const [researchPapers, setResearchPapers] = useState<Research[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("createdAt");
+  const [isDeleting, setIsDeleting] = useState(false);
 
-    useEffect(() => {
-      fetchResearchPapers();
-    }, [searchQuery, filter, sortBy]);
+  useEffect(() => {
+    fetchResearchPapers();
+  }, [searchQuery, filter, sortBy]);
 
-    const fetchResearchPapers = async () => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams({
-          page: "1",
-          limit: "100",
-          ...(searchQuery && { search: searchQuery }),
-          ...(filter && { filter }),
-          ...(sortBy && { sortBy }),
-        });
+  const fetchResearchPapers = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: "1",
+        limit: "100",
+        ...(searchQuery && { search: searchQuery }),
+        ...(filter && { filter }),
+        ...(sortBy && { sortBy }),
+      });
 
-        const response = await fetch(`/api/admin/research?${params}`);
-        if (response.ok) {
-          const data = await response.json();
-          setResearchPapers(data);
-        }
-      } catch (error) {
-        console.error("Error fetching research papers:", error);
-      } finally {
-        setLoading(false);
+      const response = await fetch(`/api/admin/research?${params}`);
+      if (response.ok) {
+        const data = await response.json();
+        setResearchPapers(data);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching research papers:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    const handleSelectAll = () => {
-      if (selectedIds.size === researchPapers.length) {
-        setSelectedIds(new Set());
-      } else {
-        setSelectedIds(new Set(researchPapers.map((r) => r.id)));
-      }
-    };
+  const handleSelectAll = () => {
+    if (selectedIds.size === researchPapers.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(researchPapers.map((r) => r.id)));
+    }
+  };
 
-    const handleSelectOne = (id: string) => {
-      const newSelected = new Set(selectedIds);
-      if (newSelected.has(id)) {
-        newSelected.delete(id);
-      } else {
-        newSelected.add(id);
-      }
-      setSelectedIds(newSelected);
-    };
+  const handleSelectOne = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
 
-    const handleBulkDelete = async () => {
-      if (selectedIds.size === 0) return;
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
 
-      const confirmMessage = `Are you sure you want to delete ${selectedIds.size} research paper${
-        selectedIds.size > 1 ? "s" : ""
+    const confirmMessage = `Are you sure you want to delete ${selectedIds.size} research paper${selectedIds.size > 1 ? "s" : ""
       }?`;
 
-      if (!confirm(confirmMessage)) return;
+    if (!confirm(confirmMessage)) return;
 
-      setIsDeleting(true);
-      try {
-        const deletePromises = Array.from(selectedIds).map((id) =>
-          fetch(`/api/admin/research/${id}`, { method: "DELETE" })
-        );
+    setIsDeleting(true);
+    try {
+      const deletePromises = Array.from(selectedIds).map((id) =>
+        fetch(`/api/admin/research/${id}`, { method: "DELETE" })
+      );
 
-        await Promise.all(deletePromises);
-        alert(`Successfully deleted ${selectedIds.size} research paper(s)`);
-        setSelectedIds(new Set());
+      await Promise.all(deletePromises);
+      alert(`Successfully deleted ${selectedIds.size} research paper(s)`);
+      setSelectedIds(new Set());
+      fetchResearchPapers();
+    }
+    catch (error) {
+      console.error("Error deleting research papers:", error);
+      alert("Failed to delete some research papers");
+    }
+    finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleDeleteOne = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this research paper?")) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/admin/research/${id}`, {
+        method: "DELETE",
+      });
+
+      if (response.ok) {
+        alert("Research paper deleted successfully");
         fetchResearchPapers();
-      } 
-      catch (error) {
-        console.error("Error deleting research papers:", error);
-        alert("Failed to delete some research papers");
-      } 
-      finally {
-        setIsDeleting(false);
-      }
-    };
-
-    const handleDeleteOne = async (id: string) => {
-      if (!confirm("Are you sure you want to delete this research paper?")) {
-        return;
-      }
-
-      try {
-        const response = await fetch(`/api/admin/research/${id}`, {
-          method: "DELETE",
-        });
-
-        if (response.ok) {
-          alert("Research paper deleted successfully");
-          fetchResearchPapers();
-        } else {
-          alert("Failed to delete research paper");
-        }
-      } catch (error) {
-        console.error("Error deleting research:", error);
+      } else {
         alert("Failed to delete research paper");
       }
-    };
+    } catch (error) {
+      console.error("Error deleting research:", error);
+      alert("Failed to delete research paper");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -287,9 +286,8 @@ export default function ResearchManagementPage() {
                   {researchPapers.map((paper) => (
                     <tr
                       key={paper.id}
-                      className={`hover:bg-gray-50 transition-colors ${
-                        selectedIds.has(paper.id) ? "bg-blue-50" : ""
-                      }`}
+                      className={`hover:bg-gray-50 transition-colors ${selectedIds.has(paper.id) ? "bg-blue-50" : ""
+                        }`}
                     >
                       <td className="px-6 py-4 whitespace-nowrap">
                         <input
@@ -326,7 +324,7 @@ export default function ResearchManagementPage() {
                             <img
                               src={paper.createdBy.profilePicture}
                               alt={paper.createdBy.name}
-                              className="h-8 w-8 rounded-full mr-2"
+                              className="h-8 w-8 min-w-[2rem] min-h-[2rem] rounded-full mr-2 object-cover aspect-square"
                             />
                           )}
                           <div className="text-sm text-gray-900">

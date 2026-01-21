@@ -164,7 +164,7 @@ export default async function Footer() {
                     />
                 </div>
             )}
-            
+
             <div className="bg-[#F0F4FF] py-6 px-6 sm:px-8 md:px-12 lg:px-16">
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col md:flex-row justify-between items-start gap-4">

@@ -94,7 +94,22 @@ export default async function RootLayout({
         className="font-lato"
       >
         <Script src="https://checkout.razorpay.com/v1/checkout.js" />
-        <ClerkProvider>
+        <ClerkProvider
+          appearance={{
+            variables: {
+              colorPrimary: '#2563eb', // blue-600
+              colorText: '#1f2937', // gray-800
+              borderRadius: '0.75rem', // rounded-xl
+              fontFamily: 'var(--font-lato)',
+            },
+            elements: {
+              card: "shadow-xl border border-gray-100 bg-white/90 backdrop-blur-md",
+              formButtonPrimary: "bg-blue-600 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20",
+              formFieldInput: "rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500 transition-all",
+              footerActionLink: "text-blue-600 hover:text-blue-700 font-medium"
+            }
+          }}
+        >
           <DisclaimerModal
             message={companyInfo?.disclaimerMessage}
             points={companyInfo?.disclaimerPoints}

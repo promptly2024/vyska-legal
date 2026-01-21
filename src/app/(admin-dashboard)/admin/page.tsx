@@ -23,6 +23,7 @@ import {
 } from "recharts";
 import { AdminOverview } from "./AdminOverview";
 import Link from "next/link";
+import { Users, FileText, Calendar, Mail, Briefcase, UsersRound, AlertCircle } from "lucide-react";
 
 export default function AdminPage() {
     const [data, setData] = useState<AdminOverview | null>(null);
@@ -48,9 +49,7 @@ export default function AdminPage() {
     if (!data)
         return (
             <div className="flex flex-col items-center justify-center mt-16">
-                <svg className="w-12 h-12 text-red-400 mb-2" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+                <AlertCircle className="w-12 h-12 text-red-400 mb-2" />
                 <p className="text-lg font-semibold text-red-500 mb-2">Dashboard Data Unavailable</p>
                 <p className="text-gray-500">{error || "Something went wrong. Please refresh the page."}</p>
             </div>
@@ -60,7 +59,7 @@ export default function AdminPage() {
 
     return (
         <div className="p-2 sm:p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
-            <div className="grid gap-4 grid-cols-2 sm:grid-cols-2 lg:grid-cols-7">
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
                 <SummaryCard title="Total Users" value={data.users.total} icon="users" />
                 <SummaryCard title="Total Blogs" value={data.blogs.total} icon="blog" />
                 <SummaryCard title="Appointments" value={data.appointments.total} icon="calendar" />
@@ -292,11 +291,11 @@ export default function AdminPage() {
                 </p>
                 <div className="flex gap-4">
                     <Link
-                        href="/admin/team-members?action=invite"
+                        href="/admin/team-members"
                         className="px-4 py-2 bg-indigo-600 text-white rounded-lg shadow hover:bg-indigo-700 transition"
-                        title="Invite a new team member"
+                        title="Manage your team members"
                     >
-                        Invite Team Member
+                        Manage Team Members
                     </Link>
                     <Link
                         href="/admin/services?action=new"
@@ -341,49 +340,37 @@ const SummaryIcon = ({ icon }: { icon: string }) => {
     if (icon === "users")
         return (
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 mr-2" title="Users">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-7a4 4 0 11-8 0 4 4 0 018 0zm6 4v6m0 0a2 2 0 01-2 2h-4a2 2 0 01-2-2v-6a2 2 0 012-2h4a2 2 0 012 2z" />
-                </svg>
+                <Users className="w-5 h-5" />
             </span>
         );
     if (icon === "blog")
         return (
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 mr-2" title="Blogs">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 21H5a2 2 0 01-2-2V7a2 2 0 012-2h4l2-2h6a2 2 0 012 2v12a2 2 0 01-2 2z" />
-                </svg>
+                <FileText className="w-5 h-5" />
             </span>
         );
     if (icon === "calendar")
         return (
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 mr-2" title="Appointments">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10m-9 4h6m-7 4h8a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
+                <Calendar className="w-5 h-5" />
             </span>
         );
     if (icon === "mail")
         return (
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600 mr-2" title="Contacts">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 12H8m8 0a4 4 0 11-8 0 4 4 0 018 0zm2 4v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2" />
-                </svg>
+                <Mail className="w-5 h-5" />
             </span>
         );
     if (icon === "service")
         return (
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 text-blue-600 mr-2" title="Services">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2a4 4 0 014-4h6M9 17H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v2" />
-                </svg>
+                <Briefcase className="w-5 h-5" />
             </span>
         );
     if (icon === "team")
         return (
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-purple-100 text-purple-600 mr-2" title="Team Members">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m9-7a4 4 0 11-8 0 4 4 0 018 0z" />
-                </svg>
+                <UsersRound className="w-5 h-5" />
             </span>
         );
     return null;

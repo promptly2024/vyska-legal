@@ -9,6 +9,9 @@ async function main() {
     console.log('Start seeding...')
 
     await prisma.heroSlide.deleteMany();
+    await prisma.appointment.deleteMany();
+    await prisma.appointmentSlot.deleteMany();
+    await prisma.appointmentType.deleteMany();
     await prisma.testimonial.deleteMany();
     await prisma.fAQ.deleteMany();
     await prisma.companyInfo.deleteMany();
@@ -219,37 +222,61 @@ async function main() {
                 name: "Adv. Vibhu Garg",
                 role: "Managing Partner",
                 biography: "Leads the corporate and commercial division with 10 years of experience. Advises on business formation, compliance, M&A, and handles complex financial and criminal litigation.",
-                photoUrl: '/vibhu.png'
+                photoUrl: '/vibhu.png',
+                linkedin: "https://linkedin.com",
+                twitter: "https://twitter.com",
+                instagram: "https://instagram.com",
+                facebook: "https://facebook.com"
             },
             {
                 name: "Adv. Anjana Tiwari",
                 role: "Designated Partner",
                 biography: "Heads the family and civil law practice with over 10 years of experience. Expert in matrimonial, inheritance, and property disputes, known for equitable and timely resolutions.",
-                photoUrl: '/ajana.png'
+                photoUrl: '/ajana.png',
+                linkedin: "https://linkedin.com",
+                twitter: "https://twitter.com",
+                instagram: "https://instagram.com",
+                facebook: "https://facebook.com"
             },
             {
                 name: "Adv. Yash Tiwari",
                 role: "Partner",
                 biography: "Oversees taxation, commercial, and financial law. Exceptional expertise in GST compliance, corporate taxation, and commercial advisory with 3 years of experience.",
-                photoUrl: '/yash.png'
+                photoUrl: '/yash.png',
+                linkedin: "https://linkedin.com",
+                twitter: "https://twitter.com",
+                instagram: "https://instagram.com",
+                facebook: "https://facebook.com"
             },
             {
                 name: "Adv. Vibhanshu Srivastava",
                 role: "Associate",
                 biography: "Specializes in IPR and consumer protection. Represents clients in consumer commissions and debt recovery tribunals.",
-                photoUrl: '/vibhanshu.png'
+                photoUrl: '/vibhanshu.png',
+                linkedin: "https://linkedin.com",
+                twitter: "https://twitter.com",
+                instagram: "https://instagram.com",
+                facebook: "https://facebook.com"
             },
             {
                 name: "Adv. Vivek Shukla",
                 role: "Associate",
                 biography: "Expert in civil and cyber law, assisting in property disputes, data protection compliance, and digital rights enforcement.",
-                photoUrl: null
+                photoUrl: null,
+                linkedin: "https://linkedin.com",
+                twitter: "https://twitter.com",
+                instagram: "https://instagram.com",
+                facebook: "https://facebook.com"
             },
             {
                 name: "Mr. Khushal",
                 role: "Support Staff",
                 biography: "Provides essential logistical and administrative support, ensuring smooth case management and court filings.",
-                photoUrl: null
+                photoUrl: null,
+                linkedin: "https://linkedin.com",
+                twitter: "https://twitter.com",
+                instagram: "https://instagram.com",
+                facebook: "https://facebook.com"
             }
         ]
     });

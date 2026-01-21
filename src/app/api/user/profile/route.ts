@@ -3,15 +3,16 @@ import { syncUser } from '@/actions/syncUser'; import { prisma } from "@/lib/pri
 
 export async function GET() {
   try {
-    const clerkUser = await syncUser();
+    const user = await syncUser();
 
-    if (!clerkUser) {
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized, please log in.' }, { status: 401 });
     }
 
+    // console.log('User found:', user);
     const userProfile = await prisma.user.findUnique({
       where: {
-        clerkId: clerkUser.id,
+        id: user.id,
       },
       select: {
         id: true,
@@ -26,6 +27,7 @@ export async function GET() {
     });
 
     if (!userProfile) {
+      console.log('User not found');
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
