@@ -61,6 +61,7 @@ export async function POST(request: NextRequest) {
                         { status: err.status }
                     );
                 }
+                console.error("Create Appointment/Slot Error:", err);
                 // Fallback for unknown errors
                 return NextResponse.json(
                     { success: false, message: "Failed to create appointment/payment" },
