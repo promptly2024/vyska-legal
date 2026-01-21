@@ -1,3 +1,8 @@
+'use client'
+import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { useInView } from 'framer-motion'
+
 interface CompanyStats {
     yearsExperience?: string | null;
     successRate?: string | null;
@@ -5,86 +10,119 @@ interface CompanyStats {
     casesWon?: string | null;
 }
 
+const StatCounter = ({ value, label, delay }: { value: string, label: string, delay: number }) => {
+    // Extract number and suffix (e.g., "20+")
+    const numberMatch = value.match(/\d+/)
+    const number = numberMatch ? parseInt(numberMatch[0]) : 0
+    const suffix = value.replace(/\d+/, '')
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay }}
+            className="flex flex-col"
+        >
+            <div className="flex items-baseline">
+                <span className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-blue-600 mb-2 tabular-nums tracking-tight">
+                    {value}
+                </span>
+            </div>
+            <div className="text-sm sm:text-base text-gray-600 font-medium">
+                {label}
+            </div>
+        </motion.div>
+    )
+}
+
 export default function WhyVyskaExists({ companyStats }: { companyStats?: CompanyStats | null }) {
     const stats = [
-        { value: companyStats?.yearsExperience || "25+", label: "Years of experience" },
+        { value: companyStats?.yearsExperience || "20+", label: "Years of experience" },
         { value: companyStats?.successRate || "98%", label: "Success rate" },
         { value: companyStats?.trustedClients || "150+", label: "Trusted clients" },
         { value: companyStats?.casesWon || "500+", label: "Cases won" }
     ]
 
-
     return (
-        <section className="relative overflow-hidden bg-gray-50 overflow-x-hidden">
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-                <div className="relative bg-gray-50 flex items-center py-12 sm:py-16 md:py-20 lg:py-0 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-                    <div className="space-y-4 sm:space-y-6 md:space-y-8 w-full">
-                        <div className="border-l-4 border-blue-600 pl-4 sm:pl-6 md:pl-8">
-                            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4">
-                                Why Vyska exists?
-                            </h2>
-                            <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-700 leading-relaxed">
-                                Learn how our journey, values, and victories shape the way we serve you today.
-                            </p>
-                        </div>
+        <section className="relative bg-white overflow-hidden">
+            <div className="flex flex-col lg:flex-row min-h-[600px] lg:h-[700px]">
 
-                        <div>
-                            <p className="text-sm sm:text-base md:text-lg text-gray-700">
-                                Incorporated as a Limited Liability Partnership (LLP) in April 2023,{' '}
-                                <span className="text-blue-600 font-semibold">Vyska Legal</span>{' '}
-                                has grown into a distinguished full-service law firm with a strategic focus on Prayagraj and the NCR.
-                            </p>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 pt-4 sm:pt-6">
-                            {stats.map((stat, index) => (
-                                <div key={index}>
-                                    <div className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-blue-600 mb-1 sm:mb-2">
-                                        {stat.value}
-                                    </div>
-                                    <div className="text-xs sm:text-sm md:text-base text-gray-700">
-                                        {stat.label}
-                                    </div>
+                {/* Content Side */}
+                <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12 lg:p-20 relative z-10">
+                    <div className="max-w-xl w-full space-y-12">
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="space-y-6"
+                        >
+                            <div className="flex items-start gap-6">
+                                <motion.div
+                                    initial={{ height: 0 }}
+                                    whileInView={{ height: '100%' }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1, ease: "easeInOut" }}
+                                    className="w-1.5 bg-gradient-to-b from-blue-600 to-blue-300 rounded-full flex-shrink-0 self-stretch min-h-[100px]"
+                                />
+                                <div>
+                                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                                        Why <span className="text-blue-600">Vyska</span> exists?
+                                    </h2>
+                                    <p className="text-xl sm:text-2xl text-gray-600 leading-relaxed font-light">
+                                        Learn how our journey, values, and victories shape the way we serve you today.
+                                    </p>
                                 </div>
+                            </div>
+
+                            <div className="pl-8">
+                                <p className="text-lg text-gray-700 leading-relaxed">
+                                    Incorporated as a Limited Liability Partnership (LLP) in April 2023,{' '}
+                                    <strong className="text-blue-900 font-bold">Vyska Legal</strong>{' '}
+                                    has grown into a distinguished full-service law firm with a strategic focus on Prayagraj and the NCR.
+                                </p>
+                            </div>
+                        </motion.div>
+
+                        <div className="grid grid-cols-2 gap-x-12 gap-y-10 pt-4 pl-8 border-t border-gray-100">
+                            {stats.map((stat, index) => (
+                                <StatCounter
+                                    key={index}
+                                    value={stat.value}
+                                    label={stat.label}
+                                    delay={0.2 + (index * 0.1)}
+                                />
                             ))}
                         </div>
                     </div>
                 </div>
 
-                <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-auto">
-                    <div
-                        className="hidden lg:block h-full"
-                        style={{
-                            clipPath: 'polygon(10% 0, 100% 0, 100% 100%, 0 100%)'
-                        }}
-                    >
-                        <video
-                            className="object-cover"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                        >
-                            <source src="/vdo.mp4" type="video/mp4" />
-                            <source src="/vdo.webm" type="video/webm" />
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
+                {/* Video Side */}
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1 }}
+                    className="w-full lg:w-1/2 relative h-[400px] lg:h-auto overflow-hidden bg-gray-900"
+                >
+                    <div className="absolute inset-0 bg-blue-900/20 mix-blend-multiply z-10" />
 
-                    <div className="lg:hidden h-full">
-                        <video
-                            className="w-full h-full object-cover"
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                        >
-                            <source src="/vdo.mp4" type="video/mp4" />
-                            <source src="/vdo.webm" type="video/webm" />
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                </div>
+                    {/* Desktop Polygon Mask */}
+                    <div className="hidden lg:block absolute left-0 top-0 bottom-0 w-24 bg-white z-20"
+                        style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
+
+                    <video
+                        className="absolute inset-0 w-full h-full object-cover opacity-90"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                    >
+                        <source src="/vdo.mp4" type="video/mp4" />
+                        <source src="/vdo.webm" type="video/webm" />
+                    </video>
+                </motion.div>
             </div>
         </section>
     )
