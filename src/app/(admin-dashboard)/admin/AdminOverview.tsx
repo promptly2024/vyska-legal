@@ -64,6 +64,25 @@ export interface AdminOverview {
             iconUrl: string | null;
         }[];
     };
+    research: {
+        total: number;
+        recent: {
+            id: string;
+            createdAt: string;
+            updatedAt: string;
+            title: string;
+            abstract: string | null;
+            createdById: string;
+            status: string;
+            createdBy: {
+                id: string;
+                name: string;
+                email: string;
+                role: string;
+                profilePicture: string | null;
+            };
+        }[];
+    };
     teamMembers: {
         total: number;
         recent: {

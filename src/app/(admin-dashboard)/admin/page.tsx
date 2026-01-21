@@ -31,16 +31,46 @@ export default function AdminPage() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        fetch("/api/admin/overview")
+        // Fetch stats first (faster)
+        fetch("/api/admin/overview?section=stats")
             .then((res) => res.json())
-            .then((res) => {
-                setData(res);
+            .then((statsData) => {
+                if (statsData.error) throw new Error(statsData.error);
+                setData(statsData);
                 setLoading(false);
+
+                // Then fetch recent items (slower)
+                return fetch("/api/admin/overview?section=recent");
             })
-            .catch(() => {
-                setError("Failed to load admin data. Please try again later.");
-                toast.error("Failed to load admin data");
-                setLoading(false);
+            .then((res) => res.json())
+            .then((recentData) => {
+                if (recentData.error) return; // Silent fail for secondary data or handle gracefully
+
+                setData((prev) => {
+                    if (!prev) return recentData;
+
+                    return {
+                        ...prev,
+                        blogs: { ...prev.blogs, recent: recentData.blogs.recent },
+                        appointments: {
+                            ...prev.appointments,
+                            upcoming: recentData.appointments.upcoming
+                        },
+                        services: { ...prev.services, recent: recentData.services.recent },
+                        research: { ...prev.research, recent: recentData.research.recent },
+                        teamMembers: { ...prev.teamMembers, recent: recentData.teamMembers.recent },
+                        contacts: { ...prev.contacts, recent: recentData.contacts.recent },
+                        payments: { ...prev.payments, recent: recentData.payments.recent },
+                    };
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+                if (loading) {
+                    setError("Failed to load admin data. Please try again later.");
+                    toast.error("Failed to load admin data");
+                    setLoading(false);
+                }
             });
     }, []);
 
@@ -483,25 +513,78 @@ const ViewMoreLink = ({ href }: { href: string }) => (
 );
 
 const SkeletonDashboard = () => (
-    <div className="p-4 max-w-7xl mx-auto animate-pulse space-y-6">
-        <div className="h-8 bg-gray-200 rounded w-1/3 mx-auto mb-4" />
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {[...Array(4)].map((_, i) => (
-                <div key={i} className="bg-gray-100 rounded-2xl h-24" />
+    <div className="p-2 sm:p-4 md:p-6 space-y-6 max-w-7xl mx-auto">
+        {/* Summary Cards Skeleton */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+            {[...Array(8)].map((_, i) => (
+                <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                >
+                    <Card className="shadow-lg rounded-2xl bg-gradient-to-br from-white to-gray-50 border border-gray-100">
+                        <CardHeader className="pb-1 flex flex-row items-center gap-2">
+                            <div className="w-8 h-8 rounded-full bg-gray-200 animate-pulse" />
+                            <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="h-8 bg-gray-200 rounded w-16 animate-pulse" />
+                        </CardContent>
+                    </Card>
+                </motion.div>
             ))}
         </div>
+
+        {/* Charts Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[...Array(2)].map((_, i) => (
-                <div key={i} className="bg-gray-100 rounded-xl h-72" />
+                <Card key={i} className="h-full">
+                    <CardHeader>
+                        <div className="h-6 bg-gray-200 rounded w-40 animate-pulse" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="h-[250px] bg-gray-100 rounded animate-pulse" />
+                    </CardContent>
+                </Card>
             ))}
         </div>
+
+        {/* Appointments & Contacts Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {[...Array(2)].map((_, i) => (
-                <div key={i} className="bg-gray-100 rounded-xl h-72" />
+                <Card key={i} className="h-full">
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div className="h-6 bg-gray-200 rounded w-32 animate-pulse" />
+                        <div className="h-4 bg-gray-200 rounded w-16 animate-pulse" />
+                    </CardHeader>
+                    <CardContent>
+                        <div className="space-y-3">
+                            {[...Array(3)].map((_, j) => (
+                                <div key={j} className="h-12 bg-gray-100 rounded animate-pulse" />
+                            ))}
+                        </div>
+                    </CardContent>
+                </Card>
             ))}
         </div>
-        <div className="bg-gray-100 rounded-xl h-72" />
-        <div className="bg-gray-100 rounded-xl h-72" />
+
+        {/* Tables Skeleton */}
+        {[...Array(4)].map((_, i) => (
+            <Card key={i}>
+                <CardHeader className="flex flex-row items-center justify-between">
+                    <div className="h-6 bg-gray-200 rounded w-40 animate-pulse" />
+                    <div className="h-4 bg-gray-200 rounded w-16 animate-pulse" />
+                </CardHeader>
+                <CardContent>
+                    <div className="space-y-3">
+                        {[...Array(4)].map((_, j) => (
+                            <div key={j} className="h-16 bg-gray-100 rounded animate-pulse" />
+                        ))}
+                    </div>
+                </CardContent>
+            </Card>
+        ))}
     </div>
 );
 
