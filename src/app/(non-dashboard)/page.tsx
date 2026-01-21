@@ -5,6 +5,7 @@ import HeroCarousel from '@/components/landingpage/ImageCarousel'
 import MeetOurTeam from '@/components/landingpage/OurTeam'
 import Services from '@/components/landingpage/Services'
 import WhyVyskaExists from '@/components/landingpage/WhyVyska'
+import WhatsAppButton from '@/components/WhatsAppButton'
 
 export const revalidate = 0;
 
@@ -34,6 +35,7 @@ const Homepage = async () => {
       <MeetOurTeam />
       <ClientTestimonials testimonials={testimonials} />
       <FAQSection faqs={faqs} />
+      <WhatsAppButton />
     </div>
   )
 }
