@@ -456,84 +456,84 @@ const AdminUsersPage = () => {
                                 <tbody className="divide-y divide-gray-200">
                                     {users.map(user => (
                                         <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-4">
-                                            {user.avatarUrl ? (
-                                                <img
-                                                src={user.avatarUrl}
-                                                alt={user.name}
-                                                className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-100"
-                                                />
-                                            ) : (
-                                                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
-                                                {user.name.charAt(0).toUpperCase()}
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-4">
+                                                    {user.avatarUrl ? (
+                                                        <img
+                                                            src={user.avatarUrl}
+                                                            alt={user.name}
+                                                            className="w-12 h-12 rounded-full object-cover ring-2 ring-gray-100"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                                                            {user.name.charAt(0).toUpperCase()}
+                                                        </div>
+                                                    )}
+                                                    <div className="min-w-0">
+                                                        <div className="font-semibold text-gray-900 text-sm truncate">{user.name}</div>
+                                                        <div className="flex items-center gap-1.5 text-gray-500 text-sm mt-0.5">
+                                                            <Mail className="w-3.5 h-3.5 flex-shrink-0" />
+                                                            <span className="truncate">{user.email}</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            )}
-                                            <div className="min-w-0">
-                                                <div className="font-semibold text-gray-900 text-sm truncate">{user.name}</div>
-                                                <div className="flex items-center gap-1.5 text-gray-500 text-sm mt-0.5">
-                                                <Mail className="w-3.5 h-3.5 flex-shrink-0" />
-                                                <span className="truncate">{user.email}</span>
+                                            </td>
+
+                                            <td className="px-6 py-4">
+                                                <div className="flex items-center gap-3">
+                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${getRoleBadge(user.role)}`}>
+                                                        {getRoleIcon(user.role)}
+                                                        {user.role}
+                                                    </span>
+                                                    <select
+                                                        value={user.role}
+                                                        onChange={e => handleRoleChangeRequest(user.id, user.name, user.role, e.target.value)}
+                                                        className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:border-gray-400"
+                                                    >
+                                                        <option value="USER">User</option>
+                                                        <option value="ADMIN">Admin</option>
+                                                    </select>
                                                 </div>
-                                            </div>
-                                            </div>
-                                        </td>
+                                            </td>
 
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-3">
-                                            <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${getRoleBadge(user.role)}`}>
-                                                {getRoleIcon(user.role)}
-                                                {user.role}
-                                            </span>
-                                            <select
-                                                value={user.role}
-                                                onChange={e => handleRoleChangeRequest(user.id, user.name, user.role, e.target.value)}
-                                                className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all cursor-pointer hover:border-gray-400"
-                                            >
-                                                <option value="USER">User</option>
-                                                <option value="ADMIN">Admin</option>
-                                            </select>
-                                            </div>
-                                        </td>
+                                            {/* Modern Toggle Switch for Can Write Blog */}
+                                            <td className="px-6 py-4">
+                                                <span className="flex items-center justify-center">
+                                                    <label htmlFor={`toggle-blog-${user.id}`} className="relative inline-flex cursor-pointer items-center">
+                                                        <input
+                                                            type="checkbox"
+                                                            id={`toggle-blog-${user.id}`}
+                                                            className="peer sr-only"
+                                                            checked={user.canWriteBlog ?? false}
+                                                            onChange={() => handleToggleCanWriteBlog(user.id, user.canWriteBlog ?? false)}
+                                                            aria-label="Toggle blog writing permission"
+                                                        />
+                                                        <div className="w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 transition-colors" />
+                                                        <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full shadow transform peer-checked:translate-x-5 transition-transform" />
+                                                    </label>
+                                                </span>
+                                            </td>
 
-                                        {/* Modern Toggle Switch for Can Write Blog */}
-                                        <td className="px-6 py-4">
-                                            <span className="flex items-center justify-center">
-                                            <label htmlFor={`toggle-blog-${user.id}`} className="relative inline-flex cursor-pointer items-center">
-                                                <input
-                                                type="checkbox"
-                                                id={`toggle-blog-${user.id}`}
-                                                className="peer sr-only"
-                                                checked={user.canWriteBlog ?? false}
-                                                onChange={() => handleToggleCanWriteBlog(user.id, user.canWriteBlog ?? false)}
-                                                aria-label="Toggle blog writing permission"
-                                                />
-                                                <div className="w-11 h-6 bg-gray-200 rounded-full peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 peer-checked:bg-blue-600 transition-colors" />
-                                                <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full shadow transform peer-checked:translate-x-5 transition-transform" />
-                                            </label>
-                                            </span>
-                                        </td>
+                                            <td className="px-6 py-4 whitespace-nowrap">
+                                                <div className="flex items-center gap-2 text-sm text-gray-600">
+                                                    <Calendar className="w-4 h-4 text-gray-400" />
+                                                    {new Date(user.createdAt).toLocaleDateString('en-US', {
+                                                        year: 'numeric',
+                                                        month: 'short',
+                                                        day: 'numeric'
+                                                    })}
+                                                </div>
+                                            </td>
 
-                                        <td className="px-6 py-4">
-                                            <div className="flex items-center gap-2 text-sm text-gray-600">
-                                            <Calendar className="w-4 h-4 text-gray-400" />
-                                            {new Date(user.createdAt).toLocaleDateString('en-US', {
-                                                year: 'numeric',
-                                                month: 'short',
-                                                day: 'numeric'
-                                            })}
-                                            </div>
-                                        </td>
-
-                                        <td className="px-6 py-4">
-                                            <button
-                                            onClick={() => handleDeleteRequest(user.id, user.name, user.email)}
-                                            className="inline-flex items-center justify-center w-9 h-9 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                            title="Delete user"
-                                            >
-                                            <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </td>
+                                            <td className="px-6 py-4">
+                                                <button
+                                                    onClick={() => handleDeleteRequest(user.id, user.name, user.email)}
+                                                    className="inline-flex items-center justify-center w-9 h-9 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                    title="Delete user"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>

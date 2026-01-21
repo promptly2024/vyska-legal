@@ -1,6 +1,6 @@
 "use client";
 import Pagination from '@/components/Pagination';
-import { X, Loader } from 'lucide-react';
+import { X, Loader, AlertTriangle, Inbox } from 'lucide-react';
 import React from 'react'
 import { toast } from 'sonner';
 
@@ -414,10 +414,24 @@ const AppointmentManagement = () => {
                     </>
                 )}
 
-                {error && <p className="text-red-500">Error: {error}</p>}
+                {error && (
+                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-start gap-3">
+                        <AlertTriangle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                        <div>
+                            <h3 className="text-sm font-semibold text-red-800">Error</h3>
+                            <p className="text-sm text-red-700 mt-1">{error}</p>
+                        </div>
+                    </div>
+                )}
 
                 {!loading && !error && appointments.length === 0 && (
-                    <p className="text-gray-600">No appointments found.</p>
+                    <div className="text-center py-16 bg-white rounded-xl border border-gray-200 shadow-sm">
+                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+                            <Inbox className="w-8 h-8 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">No appointments found</h3>
+                        <p className="text-sm text-gray-500">Try adjusting your search or filter criteria</p>
+                    </div>
                 )}
 
                 {!loading && !error && appointments.length > 0 && (
