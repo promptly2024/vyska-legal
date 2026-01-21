@@ -86,13 +86,66 @@ export async function GET(request: NextRequest) {
                 _recentContacts,
                 _recentPayments
             ] = await Promise.all([
-                prisma.blog.findMany({ orderBy: { createdAt: 'desc' }, take: 5, include: { author: true } }),
-                prisma.appointment.findMany({ where: { slot: { date: { gte: new Date() } } }, orderBy: { slot: { date: 'asc' } }, take: 5, include: { slot: true } }),
-                prisma.service.findMany({ orderBy: { createdAt: 'desc' }, take: 5 }),
-                prisma.research.findMany({ orderBy: { createdAt: 'desc' }, take: 5, include: { createdBy: true } }),
-                prisma.teamMember.findMany({ orderBy: { createdAt: 'desc' }, take: 5 }),
-                prisma.contact.findMany({ orderBy: { createdAt: 'desc' }, take: 5 }),
-                prisma.payment.findMany({ orderBy: { createdAt: 'desc' }, take: 5, include: { user: true, service: true, appointment: { include: { appointmentType: true } } } }),
+                // Blogs: Select specific author fields
+                prisma.blog.findMany({
+                    orderBy: { createdAt: 'desc' },
+                    take: 5,
+                    include: {
+                        author: {
+                            select: { id: true, name: true, email: true, role: true, profilePicture: true, createdAt: true, updatedAt: true, clerkId: true }
+                        }
+                    }
+                }),
+                // Appointments: Select specific relation fields
+                prisma.appointment.findMany({
+                    where: { slot: { date: { gte: new Date() } } },
+                    orderBy: { slot: { date: 'asc' } },
+                    take: 5,
+                    include: {
+                        slot: true,
+                        User: { select: { id: true, name: true, email: true} },
+                        appointmentType: true
+                    }
+                }),
+                // Services
+                prisma.service.findMany({
+                    orderBy: { createdAt: 'desc' },
+                    take: 5
+                }),
+                // Research
+                prisma.research.findMany({
+                    orderBy: { createdAt: 'desc' },
+                    take: 5,
+                    include: {
+                        createdBy: {
+                            select: { id: true, name: true, email: true, role: true, profilePicture: true }
+                        }
+                    }
+                }),
+                // Team Members
+                prisma.teamMember.findMany({
+                    orderBy: { createdAt: 'desc' },
+                    take: 5
+                }),
+                // Contacts
+                prisma.contact.findMany({
+                    orderBy: { createdAt: 'desc' },
+                    take: 5
+                }),
+                // Payments: limit user and relation fields
+                prisma.payment.findMany({
+                    orderBy: { createdAt: 'desc' },
+                    take: 5,
+                    include: {
+                        user: {
+                            select: { id: true, name: true, email: true, profilePicture: true, role: true, createdAt: true, updatedAt: true, clerkId: true }
+                        },
+                        service: true,
+                        appointment: {
+                            include: { appointmentType: true }
+                        }
+                    }
+                }),
             ]);
 
             recentBlogs = _recentBlogs;

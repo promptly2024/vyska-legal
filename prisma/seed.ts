@@ -29,7 +29,7 @@ async function main() {
                 description: "We're here to listen, guide, and act—making legal decisions easier and more confident for you",
                 buttonText: "Get help now",
                 buttonLink: "/contact",
-                imageUrl: "/grouppic.png",
+                imageUrl: "http://www.rechters.pl/wp-content/uploads/20180813_SaxoBank26996-1980x1506.jpg",
                 order: 1,
                 type: "fullBackground",
                 bgColor: "from-blue-900 via-blue-800 to-gray-900",
@@ -78,11 +78,11 @@ async function main() {
                 description: "Combining deep legal expertise with a modern approach to serve individuals, startups, and corporations.",
                 buttonText: "Meet Our Team",
                 buttonLink: "/about",
-                imageUrl: "/grouppic.png",
+                imageUrl: "http://www.rechters.pl/wp-content/uploads/20180813_SaxoBank26996-1980x1506.jpg",
                 order: 2,
                 type: "split",
                 bgColor: "from-slate-900 to-gray-800",
-                isActive: false
+                isActive: true
             }
         ]
     });
