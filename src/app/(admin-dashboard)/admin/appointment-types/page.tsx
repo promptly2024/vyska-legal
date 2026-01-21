@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Plus, Trash2, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -26,7 +26,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 interface AppointmentType {
     id: string;
     title: string;
-    subTitle: string | null; 
+    subTitle: string | null;
     description: string | null;
     createdAt: string;
     updatedAt: string;
@@ -39,15 +39,16 @@ const AppointmentTypes = () => {
     const [formData, setFormData] = React.useState({
         id: '',
         title: '',
-        subTitle: '', 
+        subTitle: '',
         description: '',
         price: '',
         isActive: true,
     });
     const [loading, setLoading] = React.useState(false);
     const [editingId, setEditingId] = React.useState<string | null>(null);
-    const [message, setMessage] = React.useState<{ type: 'success' | 'error', text: string } | null>(null);
-    const [formErrors, setFormErrors] = React.useState<Record<string, string>>({});
+    const [isDialogOpen, setIsDialogOpen] = React.useState(false);
+    const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+    const [formErrors, setFormErrors] = useState<Record<string, string>>({});
     const [saving, setSaving] = React.useState(false);
     const [deletingIds, setDeletingIds] = React.useState<Record<string, boolean>>({});
 
@@ -114,22 +115,20 @@ const AppointmentTypes = () => {
     };
 
     const resetForm = () => {
-        setEditingItem(null);
+        setEditingId(null);
         setFormData({
             id: '',
             title: '',
-            subTitle: '', 
+            subTitle: '',
             description: '',
             price: '',
             isActive: true,
         });
         setFormErrors({});
+        setIsDialogOpen(false);
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setMessage(null);
-
+    const validateForm = () => {
         const errors: Record<string, string> = {};
         if (!formData.title || formData.title.trim().length === 0) {
             errors.title = 'Title is required';
@@ -157,9 +156,9 @@ const AppointmentTypes = () => {
             return;
         }
 
-        setSubmitting(true);
+        setSaving(true);
         try {
-            const isEdit = !!editingItem;
+            const isEdit = !!editingId;
             const method = isEdit ? 'PUT' : 'POST';
             const normalizedPrice = Math.round(Number((formData.price || '0').toString().replace(',', '.')) * 100) / 100;
 
@@ -170,7 +169,7 @@ const AppointmentTypes = () => {
                 price: normalizedPrice,
                 isActive: Boolean(formData.isActive),
             };
-            if (isEdit && editingItem) payload.id = editingItem.id;
+            if (isEdit && editingId) payload.id = editingId;
 
             const response = await fetch('/api/appointment-type', {
                 method,
@@ -188,16 +187,20 @@ const AppointmentTypes = () => {
                     setAppointmentTypes((prev) =>
                         prev.map((a) => (a.id === returned.id ? returned : a))
                     );
+                    toast.success('Service Type updated');
                     setMessage({ type: 'success', text: 'Service Type updated' });
                 } else {
                     setAppointmentTypes((prev) => [returned, ...prev]);
+                    toast.success('Service Type created');
                     setMessage({ type: 'success', text: 'Service Type created' });
                 }
                 resetForm();
             } else {
+                toast.error(data.error || 'Operation failed');
                 setMessage({ type: 'error', text: data.error || 'Operation failed' });
             }
         } catch (error) {
+            toast.error('Server error while saving');
             setMessage({ type: 'error', text: 'Server error while saving' });
         } finally {
             setSaving(false);
@@ -214,11 +217,7 @@ const AppointmentTypes = () => {
             price: (Number(item.price || 0)).toFixed(2),
             isActive: item.isActive,
         });
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    const handleCancelEdit = () => {
-        resetForm();
+        setIsDialogOpen(true);
     };
 
     const handleDelete = async (id: string) => {
@@ -234,11 +233,14 @@ const AppointmentTypes = () => {
             const data = await response.json();
             if (data.success) {
                 setAppointmentTypes((prev) => prev.filter((a) => a.id !== id));
+                toast.success('Service Type deleted');
                 setMessage({ type: 'success', text: 'Service Type deleted' });
             } else {
+                toast.error(data.error || 'Delete failed');
                 setMessage({ type: 'error', text: data.error || 'Delete failed' });
             }
         } catch (error) {
+            toast.error('Server error while deleting');
             setMessage({ type: 'error', text: 'Server error while deleting' });
         } finally {
             setDeletingIds((prev) => {
@@ -287,88 +289,96 @@ const AppointmentTypes = () => {
                     )}
                 </div>
 
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent className="max-w-md">
-                    <DialogHeader>
-                        <DialogTitle>{editingItem ? "Edit Appointment Type" : "Create Appointment Type"}</DialogTitle>
-                    </DialogHeader>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Service Type</label>
-                                <input
-                                    name="title"
-                                    value={formData.title}
-                                    onChange={handleInputChange}
-                                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                                    placeholder="e.g. Consultation"
-                                    disabled={saving}
-                                />
-                                {formErrors.title && <div className="text-xs text-red-600 mt-1">{formErrors.title}</div>}
-                            </div>
+                {/* Add Button */}
+                <div className="mb-4">
+                    <Button onClick={() => setIsDialogOpen(true)}>
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Appointment Type
+                    </Button>
+                </div>
 
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Sub-Service Type</label>
-                                <input
-                                    name="subTitle"
-                                    value={formData.subTitle}
-                                    onChange={handleInputChange}
-                                    className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                                    placeholder="e.g. Marriage Consultation, Car Consultation"
-                                    disabled={saving}
-                                />
-                                {formErrors.subTitle && <div className="text-xs text-red-600 mt-1">{formErrors.subTitle}</div>}
-                            </div>
-
-                            <div className="flex items-end">
-                                <div className="w-full">
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Price (INR)</label>
-                                    <input
-                                        name="price"
-                                        type="text"
-                                        inputMode="decimal"
-                                        pattern="[0-9]*[.,]?[0-9]*"
-                                        value={formData.price}
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                    <DialogContent className="max-w-md">
+                        <DialogHeader>
+                            <DialogTitle>{editingId ? "Edit Appointment Type" : "Create Appointment Type"}</DialogTitle>
+                        </DialogHeader>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="md:col-span-2">
+                                    <Label htmlFor="title">Service Type</Label>
+                                    <Input
+                                        id="title"
+                                        name="title"
+                                        value={formData.title}
                                         onChange={handleInputChange}
-                                        onBlur={handlePriceBlur}
-                                        className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                                        placeholder="e.g. Consultation"
                                         disabled={saving}
                                     />
-                                    {formErrors.price && <div className="text-xs text-red-600 mt-1">{formErrors.price}</div>}
+                                    {formErrors.title && <div className="text-xs text-red-600 mt-1">{formErrors.title}</div>}
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Label htmlFor="subTitle">Sub-Service Type</Label>
+                                    <Input
+                                        id="subTitle"
+                                        name="subTitle"
+                                        value={formData.subTitle}
+                                        onChange={handleInputChange}
+                                        placeholder="e.g. Marriage Consultation, Car Consultation"
+                                        disabled={saving}
+                                    />
+                                    {formErrors.subTitle && <div className="text-xs text-red-600 mt-1">{formErrors.subTitle}</div>}
+                                </div>
+
+                                <div className="flex items-end">
+                                    <div className="w-full">
+                                        <Label htmlFor="price">Price (INR)</Label>
+                                        <Input
+                                            id="price"
+                                            name="price"
+                                            type="text"
+                                            inputMode="decimal"
+                                            value={formData.price}
+                                            onChange={handleInputChange}
+                                            onBlur={handlePriceBlur}
+                                            disabled={saving}
+                                        />
+                                        {formErrors.price && <div className="text-xs text-red-600 mt-1">{formErrors.price}</div>}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="space-y-2">
-                            <Label htmlFor="description">Description</Label>
-                            <Textarea
-                                id="description"
-                                value={formData.description}
-                                onChange={handleInputChange}
-                                rows={3}
-                                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-                                placeholder="Short description for this Service Type"
-                                disabled={saving}
-                            />
-                        </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="description">Description</Label>
+                                <Textarea
+                                    id="description"
+                                    name="description"
+                                    value={formData.description}
+                                    onChange={handleInputChange}
+                                    rows={3}
+                                    placeholder="Short description for this Service Type"
+                                    disabled={saving}
+                                />
+                            </div>
 
-                        <div className="flex items-center space-x-2 pt-2">
-                            <Checkbox
-                                id="isActive"
-                                checked={formData.isActive}
-                                onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked as boolean })}
-                            />
-                            <Label htmlFor="isActive">Active</Label>
-                        </div>
+                            <div className="flex items-center space-x-2 pt-2">
+                                <Checkbox
+                                    id="isActive"
+                                    checked={formData.isActive}
+                                    onCheckedChange={(checked) => setFormData({ ...formData, isActive: checked as boolean })}
+                                />
+                                <Label htmlFor="isActive">Active</Label>
+                            </div>
 
-                        <div className="flex justify-end gap-2 pt-4">
-                            <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
-                            <Button type="submit" disabled={submitting}>
-                                {submitting ? "Saving..." : (editingItem ? "Update" : "Create")}
-                            </Button>
-                        </div>
-                    </form>
-                </div>
+                            <div className="flex justify-end gap-2 pt-4">
+                                <Button type="button" variant="ghost" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                                <Button type="submit" disabled={saving}>
+                                    {saving ? "Saving..." : (editingId ? "Update" : "Create")}
+                                </Button>
+                            </div>
+                        </form>
+                    </DialogContent>
+                </Dialog>
 
                 <div className="bg-white shadow rounded-lg overflow-hidden">
                     <div className="p-3 sm:p-4 border-b">
@@ -381,7 +391,6 @@ const AppointmentTypes = () => {
                     {loading ? (
                         <div className="p-3 sm:p-4">
                             <div className="space-y-3">
-                                {/* small top-line spinner + hint */}
                                 <div className="flex items-center gap-3">
                                     <svg className="animate-spin h-5 w-5 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -390,7 +399,6 @@ const AppointmentTypes = () => {
                                     <div className="text-sm text-gray-600">Loading appointment types…</div>
                                 </div>
 
-                                {/* skeleton table placeholder */}
                                 <div className="overflow-x-auto">
                                     <table className="min-w-full divide-y divide-gray-200">
                                         <thead className="bg-gray-50">
@@ -508,4 +516,6 @@ const AppointmentTypes = () => {
             </div>
         </div>
     );
-}
+};
+
+export default AppointmentTypes;
