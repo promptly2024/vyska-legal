@@ -16,7 +16,7 @@ interface Testimonial {
 const TestimonialCard = ({ testimonial, isActive }: { testimonial: Testimonial, isActive: boolean }) => (
     <div
         className={`relative rounded-3xl p-8 flex flex-col h-full backdrop-blur-md border transition-all duration-300 ${isActive
-            ? 'bg-white/90 border-blue-200 shadow-xl'
+            ? 'bg-white/90 border-blue-200 shadow-none'
             : 'bg-white/60 border-transparent shadow-none'
             }`}
     >
@@ -186,7 +186,7 @@ export default function ClientTestimonials({ testimonials = [] }: { testimonials
                 </div>
 
                 {/* Desktop Carousel (Simple Sliding Track) */}
-                <div className="hidden lg:block relative overflow-hidden px-4 -mx-4">
+                <div className="hidden lg:block relative px-12 xl:px-16">
                     <div className="overflow-hidden">
                         <motion.div
                             className="flex"
@@ -215,13 +215,13 @@ export default function ClientTestimonials({ testimonials = [] }: { testimonials
                     {/* Navigation Buttons for Desktop */}
                     <button
                         onClick={handlePrev}
-                        className="absolute top-1/2 left-0 -translate-y-1/2 p-3 rounded-full bg-white border border-gray-200 shadow-lg hover:bg-gray-50 transition-all text-gray-900 z-30"
+                        className="absolute top-1/2 left-0 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 border border-gray-200 shadow-sm hover:bg-gray-50 transition-all text-gray-900 z-30"
                     >
                         <ChevronLeft size={24} />
                     </button>
                     <button
                         onClick={handleNext}
-                        className="absolute top-1/2 right-0 -translate-y-1/2 p-3 rounded-full bg-white border border-gray-200 shadow-lg hover:bg-gray-50 transition-all text-gray-900 z-30"
+                        className="absolute top-1/2 right-0 -translate-y-1/2 flex h-11 w-11 items-center justify-center rounded-full bg-white/95 border border-gray-200 shadow-sm hover:bg-gray-50 transition-all text-gray-900 z-30"
                     >
                         <ChevronRight size={24} />
                     </button>

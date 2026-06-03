@@ -1,10 +1,19 @@
 import React from 'react'
 import { prisma } from '@/lib/prisma'
 import ContactForm from '@/components/contact/ContactForm'
-import { Mail, Phone, MapPin } from 'lucide-react'
+import { Mail, Phone, MapPin, Clock } from 'lucide-react'
+import {
+  DEFAULT_EMAIL,
+  DEFAULT_OFFICE_HOURS,
+  DEFAULT_PHONE,
+  getPrayagrajOffice,
+  getRegisteredOffice,
+} from '@/lib/company-contact'
 
 const ContactUsPage = async () => {
   const companyInfo = await prisma.companyInfo.findFirst();
+  const registeredOffice = getRegisteredOffice(companyInfo);
+  const prayagrajOffice = getPrayagrajOffice(companyInfo);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex flex-col items-center justify-center px-2 py-8">
@@ -23,15 +32,32 @@ const ContactUsPage = async () => {
             <div className="space-y-4 text-blue-100 text-sm">
               <div className="flex items-center gap-2">
                 <Mail className="w-5 h-5 text-blue-200" />
-                <span>{companyInfo?.email || 'service@vyskalegal.com'}</span>
+                <span>{companyInfo?.email || DEFAULT_EMAIL}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-blue-200" />
-                <span>{companyInfo?.phone || '+91 8382XXXXXX'}</span>
+                <span>{companyInfo?.phone || DEFAULT_PHONE}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-5 h-5 text-blue-200" />
-                <span>{companyInfo?.address || '123, Law Street, Bengaluru, India'}</span>
+              <div className="flex items-start gap-2">
+                <MapPin className="w-5 h-5 text-blue-200 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-white">Registered Office</p>
+                  <p>{registeredOffice}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <MapPin className="w-5 h-5 text-blue-200 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-white">Prayagraj Office</p>
+                  <p>{prayagrajOffice}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-2">
+                <Clock className="w-5 h-5 text-blue-200 mt-0.5 shrink-0" />
+                <div>
+                  <p className="font-semibold text-white">Office Hours</p>
+                  <p>{DEFAULT_OFFICE_HOURS}</p>
+                </div>
               </div>
             </div>
           </div>

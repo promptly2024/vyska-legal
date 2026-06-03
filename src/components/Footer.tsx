@@ -1,9 +1,16 @@
 import Link from 'next/link'
 import { Instagram, Linkedin } from 'lucide-react'
 import { prisma } from "@/lib/prisma"
+import {
+    DEFAULT_OFFICE_HOURS,
+    getPrayagrajOffice,
+    getRegisteredOffice,
+} from "@/lib/company-contact"
 
 export default async function Footer() {
     const companyInfo = await prisma.companyInfo.findFirst();
+    const registeredOffice = getRegisteredOffice(companyInfo);
+    const prayagrajOffice = getPrayagrajOffice(companyInfo);
 
     return (
         <footer className="bg-[#F3F3F3] ">
@@ -175,10 +182,13 @@ export default async function Footer() {
                         </div>
                         <div className="flex flex-col gap-2 text-sm md:text-base text-gray-700">
                             <div>
-                                <span className="font-semibold">Head Office:</span> {companyInfo?.headOffice || companyInfo?.address || "New Delhi, Mumbai, Pune, Noida, Lucknow and Prayagraj"}
+                                <span className="font-semibold">Registered Office:</span> {registeredOffice}
                             </div>
                             <div>
-                                <span className="font-semibold">Working hours:</span> 12:00 PM - 08:00 PM
+                                <span className="font-semibold">Prayagraj Office:</span> {prayagrajOffice}
+                            </div>
+                            <div>
+                                <span className="font-semibold">Working hours:</span> {DEFAULT_OFFICE_HOURS}
                             </div>
                         </div>
                     </div>

@@ -2,6 +2,12 @@ import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { MessageCircle, Phone, Mail, HelpCircle, FileText } from 'lucide-react';
+import {
+  DEFAULT_EMAIL,
+  DEFAULT_OFFICE_HOURS,
+  DEFAULT_PHONE,
+  DEFAULT_WHATSAPP_URL,
+} from '@/lib/company-contact';
 
 const HelpPage = () => {
   return (
@@ -40,7 +46,7 @@ const HelpPage = () => {
                   Get instant replies and support anytime, anywhere
                 </p>
 
-                <a href="https://wa.me/918382000000" target="_blank" rel="noopener noreferrer">
+                <a href={DEFAULT_WHATSAPP_URL} target="_blank" rel="noopener noreferrer">
                   <Button
                     className="w-full bg-green-600 hover:bg-green-700 text-white"
                   >
@@ -68,7 +74,7 @@ const HelpPage = () => {
                   Speak directly with our team for immediate assistance
                 </p>
 
-                <a href="tel:+918382000000">
+                <a href={`tel:${DEFAULT_PHONE}`}>
                   <Button
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                   >
@@ -96,7 +102,7 @@ const HelpPage = () => {
                   Send detailed queries and receive comprehensive responses
                 </p>
 
-                <a href="mailto:service@vyskalegal.com">
+                <a href={`mailto:${DEFAULT_EMAIL}`}>
                   <Button
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                   >
@@ -124,8 +130,7 @@ const HelpPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <h4 className="font-semibold text-gray-800 mb-2">Business Hours</h4>
-              <p className="text-sm text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</p>
-              <p className="text-sm text-gray-600">Saturday: 10:00 AM - 4:00 PM</p>
+              <p className="text-sm text-gray-600">{DEFAULT_OFFICE_HOURS}</p>
             </div>
             <div className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
               <h4 className="font-semibold text-gray-800 mb-2">Response Time</h4>

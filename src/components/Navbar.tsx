@@ -12,7 +12,7 @@ export default function Navbar() {
     const navLinks = [
         { name: 'Home', href: '/' },
         { name: 'About', href: '/about' },
-        { name: 'Services', href: '/services', mobileOnly: true },
+        { name: 'Services', href: '/services' },
         { name: 'Research', href: '/research' },
         { name: 'Blog', href: '/blogs' },
         { name: 'Contact', href: '/contact' },
@@ -44,7 +44,7 @@ export default function Navbar() {
 
                     {/* Desktop Menu */}
                     <div className="hidden lg:flex items-center space-x-8">
-                        {navLinks.filter(l => !l.mobileOnly).map((link) => (
+                        {navLinks.map((link) => (
                             <Link
                                 key={link.name}
                                 href={link.href}

@@ -158,24 +158,24 @@ export default function CompanyInfoPage() {
                             <p className="text-xs text-gray-500">Optional. Only meant for direct messaging links.</p>
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="headOffice">Head Office Location</Label>
+                            <Label htmlFor="headOffice">Registered Office Address</Label>
                             <Input
                                 id="headOffice"
                                 value={formData.headOffice}
                                 onChange={e => setFormData({ ...formData, headOffice: e.target.value })}
-                                placeholder="e.g. New Delhi"
+                                placeholder="House No. 18A/K, Awadhpuri Colony, Muir Road..."
                             />
-                            <p className="text-xs text-gray-500">The city/label shown above the address in the footer.</p>
+                            <p className="text-xs text-gray-500">Shown publicly as the registered office address.</p>
                         </div>
                         <div className="space-y-2 col-span-2">
-                            <Label htmlFor="address">Full Office Address <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="address">Prayagraj Office Address <span className="text-red-500">*</span></Label>
                             <Textarea
                                 id="address"
                                 value={formData.address}
                                 onChange={e => setFormData({ ...formData, address: e.target.value })}
                                 required
                             />
-                            <p className="text-xs text-gray-500">Full address displayed in the contact page.</p>
+                            <p className="text-xs text-gray-500">Shown publicly as the main Prayagraj office address.</p>
                         </div>
                         <div className="space-y-2 col-span-2">
                             <Label htmlFor="mapUrl">Google Maps Embed URL</Label>

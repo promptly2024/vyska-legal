@@ -1,9 +1,99 @@
 
+import Image from "next/image"
+import Link from "next/link"
 import { prisma } from "@/lib/prisma"
-import Link from 'next/link'
-import { ArrowUpRight, Scale, ShieldCheck, Briefcase, Calculator, Building, Users } from 'lucide-react'
+import { DEFAULT_EMAIL, DEFAULT_PHONE } from "@/lib/company-contact"
+import {
+    ArrowRight,
+    ArrowUpRight,
+    BadgeCheck,
+    BriefcaseBusiness,
+    Building2,
+    Calculator,
+    CheckCircle2,
+    FileSearch,
+    Gavel,
+    HandCoins,
+    HeartHandshake,
+    type LucideIcon,
+    MessageSquareText,
+    Scale,
+    ShieldCheck,
+    ShieldEllipsis,
+    Sprout,
+    Users,
+    Workflow,
+} from "lucide-react"
 
 export const revalidate = 0;
+
+const servicePromises = [
+    {
+        title: "Clear, client-first guidance",
+        description:
+            "We keep legal advice practical, understandable, and aligned with the real outcome you want to achieve.",
+        icon: BadgeCheck,
+    },
+    {
+        title: "Strategic support across matters",
+        description:
+            "From preventive advisory work to dispute resolution, our team is structured to support both immediate needs and long-term decisions.",
+        icon: ShieldCheck,
+    },
+    {
+        title: "Professional communication throughout",
+        description:
+            "You can expect timely updates, transparent conversations, and a disciplined legal approach from start to finish.",
+        icon: HeartHandshake,
+    },
+]
+
+const processSteps = [
+    {
+        title: "Initial consultation",
+        description: "We understand the issue, goals, timeline, and any urgent risks before defining the next legal step.",
+        icon: MessageSquareText,
+    },
+    {
+        title: "Document and matter review",
+        description: "We review agreements, records, filings, and surrounding facts to identify the strongest legal position.",
+        icon: FileSearch,
+    },
+    {
+        title: "Strategy and representation",
+        description: "We build a tailored course of action, whether it involves advisory work, negotiation, drafting, or litigation.",
+        icon: Gavel,
+    },
+    {
+        title: "Ongoing support and resolution",
+        description: "We stay engaged through follow-ups, appearances, and implementation so the matter moves forward with clarity.",
+        icon: CheckCircle2,
+    },
+]
+
+const serviceIconMap: Array<{ keywords: string[]; icon: LucideIcon }> = [
+    { keywords: ["corporate", "commercial"], icon: BriefcaseBusiness },
+    { keywords: ["litigation", "dispute"], icon: Gavel },
+    { keywords: ["real estate", "property"], icon: Building2 },
+    { keywords: ["banking", "finance"], icon: HandCoins },
+    { keywords: ["intellectual property", "ipr"], icon: ShieldCheck },
+    { keywords: ["family"], icon: Users },
+    { keywords: ["employment", "labour"], icon: BriefcaseBusiness },
+    { keywords: ["tax"], icon: Calculator },
+    { keywords: ["consumer"], icon: BadgeCheck },
+    { keywords: ["environment"], icon: Sprout },
+    { keywords: ["technology", "privacy"], icon: ShieldEllipsis },
+    { keywords: ["alternative dispute", "adr"], icon: Workflow },
+]
+
+function getServiceIcon(title: string) {
+    const normalizedTitle = title.toLowerCase()
+    const match = serviceIconMap.find(({ keywords }) =>
+        keywords.some((keyword) => normalizedTitle.includes(keyword))
+    )
+
+    return match?.icon || Scale
+}
 
 export default async function ServicesPage() {
     const [services, companyInfo] = await Promise.all([
@@ -14,93 +104,273 @@ export default async function ServicesPage() {
         prisma.companyInfo.findFirst()
     ]);
 
-    const phoneNumber = companyInfo?.phone || '+919616700999';
+    const phoneNumber = companyInfo?.phone || DEFAULT_PHONE;
+    const email = companyInfo?.email || DEFAULT_EMAIL;
     const telLink = `tel:${phoneNumber.replace(/\s+/g, '')}`;
+    const stats = [
+        { label: "Practice Areas", value: String(services.length).padStart(2, "0") },
+        { label: "Years of Experience", value: companyInfo?.yearsExperience || "10+" },
+        { label: "Trusted Clients", value: companyInfo?.trustedClients || "200+" },
+    ]
 
     return (
-        <div className="min-h-screen bg-neutral-50 font-sans selection:bg-blue-100 selection:text-blue-900">
-            {/* Hero Section */}
-            <div className="relative bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white min-h-[400px] flex items-center justify-center overflow-hidden">
-                <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10"></div>
-                <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-neutral-50/10"></div>
-                <div className="max-w-7xl mx-auto text-center relative z-10 px-4 py-20">
-                    <span className="inline-block py-1 px-3 rounded-full bg-blue-800/50 border border-blue-400/30 text-blue-200 text-sm font-medium mb-6 tracking-wide uppercase">
-                        Our Expertise
-                    </span>
-                    <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold mb-6 tracking-tight leading-tight">
-                        Legal Excellence <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-indigo-200">Tailored to You</span>
-                    </h1>
-                    <p className="text-lg md:text-xl text-blue-100/80 max-w-2xl mx-auto leading-relaxed font-light">
-                        Comprehensive legal solutions designed for clarity, integrity, and results. We navigate the complexities so you don't have to.
-                    </p>
-                </div>
-            </div>
-            <div className="mt-10" />
-            {/* Services Grid */}
-            <section className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-20 relative z-10">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {services.map((service, index) => (
-                        <div
-                            key={service.id}
-                            className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_rgba(0,0,0,0.1)] transition-all duration-300 overflow-hidden border border-gray-100 group flex flex-col h-full transform hover:-translate-y-1"
-                        >
-                            <div className="p-8 flex-1 flex flex-col">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
-                                        <Scale className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
-                                    </div>
-                                    <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">0{index + 1}</span>
-                                </div>
-                                <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-700 transition-colors">
-                                    {service.title}
-                                </h3>
-                                <p className="text-gray-600 leading-relaxed mb-6 flex-1 text-[15px]">
-                                    {service.description}
-                                </p>
-                                <div className="mt-auto pt-6 border-t border-gray-50 flex items-center justify-between">
-                                    <Link href="/book-appointments" className="flex items-center gap-2 group/link">
-                                        <span className="text-blue-600 font-semibold text-sm tracking-wide group-hover/link:underline decoration-blue-300 underline-offset-4">Book Consultation</span>
-                                        <ArrowUpRight className="w-4 h-4 text-blue-600 transition-transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
-                                    </Link>
+        <main className="min-h-screen bg-gray-50 overflow-hidden font-lato selection:bg-blue-100 selection:text-blue-900">
+            <section className="relative overflow-hidden bg-gradient-to-b from-blue-900 via-blue-800 to-blue-900 pt-28 pb-20 lg:pb-24">
+                <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-10" />
+                <div className="absolute top-0 right-0 h-[28rem] w-[28rem] rounded-full bg-blue-400/20 blur-[120px] translate-x-1/3 -translate-y-1/3" />
+                <div className="absolute bottom-0 left-0 h-[24rem] w-[24rem] rounded-full bg-indigo-500/20 blur-[100px] -translate-x-1/3 translate-y-1/3" />
+
+                <div className="relative z-10 mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.1fr_0.9fr] lg:px-8 lg:items-center">
+                    <div className="max-w-3xl">
+                        <span className="inline-flex items-center rounded-full border border-blue-300/20 bg-white/10 px-4 py-1.5 text-sm font-semibold tracking-[0.2em] text-blue-100 uppercase backdrop-blur-sm">
+                            Practice Areas
+                        </span>
+                        <h1 className="mt-6 text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+                            Legal services built around clarity, strategy, and trusted representation.
+                        </h1>
+                        <p className="mt-6 max-w-2xl text-lg leading-8 text-blue-100">
+                            Vyska Legal supports individuals, families, businesses, and institutions across a broad range of legal matters. Explore our active practice areas and connect with the team for tailored legal guidance.
+                        </p>
+
+                        <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+                            <a
+                                href="#practice-areas"
+                                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-base font-semibold text-blue-900 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50"
+                            >
+                                Explore Practice Areas
+                                <ArrowRight className="h-4 w-4" />
+                            </a>
+                            <Link
+                                href="/book-appointments"
+                                className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/10 px-6 py-3.5 text-base font-semibold text-white backdrop-blur-sm transition hover:bg-white/15"
+                            >
+                                Book a Consultation
+                            </Link>
+                        </div>
+                    </div>
+
+                    <div className="relative lg:ml-auto w-full max-w-xl">
+                        <div className="absolute -inset-4 rounded-[2rem] bg-blue-300/10 blur-3xl" />
+                        <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/5 shadow-2xl">
+                            <Image
+                                src="/officepic.jpg"
+                                alt="Vyska Legal office"
+                                width={960}
+                                height={720}
+                                priority
+                                className="h-[320px] w-full object-cover sm:h-[380px] lg:h-[440px]"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-blue-950/95 via-blue-950/30 to-transparent" />
+                            <div className="absolute inset-x-6 bottom-6">
+                                <div className="max-w-sm">
+                                    <p className="text-xs font-semibold uppercase tracking-[0.28em] text-blue-200">
+                                        Full-Service Support
+                                    </p>
+                                    <p className="mt-2 text-xl font-semibold text-white">
+                                        Practical counsel for urgent legal questions and long-term matters alike.
+                                    </p>
                                 </div>
                             </div>
-                            <div className="h-1 w-full bg-gradient-to-r from-blue-500 to-indigo-600 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="relative z-10 -mt-10 px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto grid max-w-6xl gap-4 md:grid-cols-3">
+                    {stats.map((stat) => (
+                        <div
+                            key={stat.label}
+                            className="rounded-2xl border border-blue-100 bg-white px-6 py-5 shadow-sm"
+                        >
+                            <p className="text-sm font-medium uppercase tracking-[0.2em] text-blue-500">{stat.label}</p>
+                            <p className="mt-3 text-3xl font-bold text-gray-900">{stat.value}</p>
                         </div>
                     ))}
                 </div>
             </section>
 
-            {/* CTA Section */}
-            <section className="pb-24 pt-10 px-4">
-                <div className="max-w-5xl mx-auto bg-gradient-to-r from-blue-900 to-slate-900 rounded-[2.5rem] p-10 md:p-20 shadow-2xl relative overflow-hidden text-center">
-                    <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
-                    <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+            <section className="py-16 lg:py-20">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mb-10 max-w-3xl">
+                        <span className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">Why Clients Reach Out</span>
+                        <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
+                            Legal support shaped around clarity, responsiveness, and strategy.
+                        </h2>
+                    </div>
 
-                    <div className="relative z-10">
-                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 tracking-tight">Ready to Discuss Your Case?</h2>
-                        <p className="text-lg text-blue-100 mb-10 max-w-2xl mx-auto font-light">
-                            Connect with our expert legal team today. We are here to listen, understand, and provide the guidance you need.
+                    <div className="grid gap-6 md:grid-cols-3">
+                        {servicePromises.map((item) => (
+                            <div
+                                key={item.title}
+                                className="rounded-3xl border border-gray-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+                            >
+                                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+                                    <item.icon className="h-6 w-6" />
+                                </div>
+                                <h3 className="mt-6 text-xl font-bold text-gray-900">{item.title}</h3>
+                                <p className="mt-3 text-base leading-7 text-gray-600">{item.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <section id="practice-areas" className="py-6 lg:py-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mb-12 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                        <div className="max-w-3xl">
+                            <span className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">Our Services</span>
+                            <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
+                                Explore the legal practice areas currently offered by the firm.
+                            </h2>
+                            <p className="mt-4 text-lg leading-8 text-gray-600">
+                                Each practice area below highlights the matters our team actively handles, with a focus on scope, clarity, and the support clients can expect.
+                            </p>
+                        </div>
+                        <Link
+                            href="/contact"
+                            className="inline-flex items-center gap-2 self-start rounded-full border border-blue-200 bg-white px-5 py-3 text-sm font-semibold text-blue-700 transition hover:border-blue-300 hover:bg-blue-50"
+                        >
+                            Need help choosing the right service?
+                            <ArrowUpRight className="h-4 w-4" />
+                        </Link>
+                    </div>
+
+                    {services.length === 0 ? (
+                        <div className="rounded-3xl border border-dashed border-blue-200 bg-white px-8 py-16 text-center text-gray-600 shadow-sm">
+                            Services will appear here once active practice areas are available.
+                        </div>
+                    ) : (
+                        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+                            {services.map((service, index) => {
+                                const Icon = getServiceIcon(service.title)
+
+                                return (
+                                    <article
+                                        key={service.id}
+                                        className="group flex h-full flex-col rounded-[1.75rem] border border-blue-100 bg-white p-7 shadow-sm transition duration-300 hover:-translate-y-1.5 hover:shadow-xl"
+                                    >
+                                        <div className="flex items-start justify-between gap-4">
+                                            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 transition group-hover:bg-blue-700 group-hover:text-white">
+                                                <Icon className="h-6 w-6" />
+                                            </div>
+                                            <span className="text-sm font-semibold tracking-[0.28em] text-blue-200">
+                                                {String(index + 1).padStart(2, "0")}
+                                            </span>
+                                        </div>
+
+                                        <h3 className="mt-6 text-2xl font-bold leading-tight text-gray-900 group-hover:text-blue-800">
+                                            {service.title}
+                                        </h3>
+                                        <p className="mt-4 flex-1 text-base leading-7 text-gray-600">
+                                            {service.description}
+                                        </p>
+
+                                        <div className="mt-8 flex items-center justify-between border-t border-gray-100 pt-5">
+                                            <span className="text-sm font-semibold text-blue-700">Discuss this practice area</span>
+                                            <Link
+                                                href="/book-appointments"
+                                                className="inline-flex items-center gap-2 text-sm font-semibold text-gray-700 transition hover:text-blue-700"
+                                            >
+                                                Book consultation
+                                                <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                                            </Link>
+                                        </div>
+                                    </article>
+                                )
+                            })}
+                        </div>
+                    )}
+                </div>
+            </section>
+
+            <section className="py-16 lg:py-24">
+                <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8 lg:items-center">
+                    <div className="relative overflow-hidden rounded-[2rem] border border-blue-100 bg-white shadow-xl">
+                        <Image
+                            src="/court.png"
+                            alt="Courtroom representation"
+                            width={900}
+                            height={900}
+                            className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/90 via-blue-950/15 to-transparent" />
+                        <div className="absolute inset-x-6 bottom-6 rounded-2xl border border-white/10 bg-white/10 p-5 backdrop-blur-sm">
+                            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-200">Our Process</p>
+                            <p className="mt-2 text-lg font-semibold text-white">
+                                Every matter moves through a clear, structured legal workflow.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <span className="text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">How We Work</span>
+                        <h2 className="mt-3 text-3xl font-bold text-gray-900 sm:text-4xl">
+                            Straightforward legal support, from first conversation to final action.
+                        </h2>
+                        <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-600">
+                            Whether the matter is advisory, documentation-heavy, or dispute-driven, the goal is to keep the process disciplined, understandable, and outcome-oriented.
                         </p>
-                        <div className="flex flex-col sm:flex-row gap-5 justify-center">
+
+                        <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                            {processSteps.map((step, index) => (
+                                <div
+                                    key={step.title}
+                                    className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-50 text-blue-700">
+                                            <step.icon className="h-5 w-5" />
+                                        </div>
+                                        <span className="text-sm font-semibold tracking-[0.24em] text-blue-300">
+                                            0{index + 1}
+                                        </span>
+                                    </div>
+                                    <h3 className="mt-5 text-lg font-bold text-gray-900">{step.title}</h3>
+                                    <p className="mt-3 text-sm leading-7 text-gray-600">{step.description}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="pb-24 pt-6 px-4 sm:px-6 lg:px-8">
+                <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2.5rem] bg-gradient-to-r from-blue-900 to-slate-900 px-8 py-12 text-center shadow-2xl md:px-16 md:py-16">
+                    <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-blue-400/20 blur-3xl" />
+                    <div className="absolute -bottom-24 -left-20 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl" />
+
+                    <div className="relative z-10 mx-auto max-w-3xl">
+                        <h2 className="text-3xl font-bold tracking-tight text-white md:text-5xl">
+                            Need support on one of these legal matters?
+                        </h2>
+                        <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-blue-100">
+                            Reach out to the team for a consultation and let us understand your matter with the seriousness it deserves.
+                        </p>
+                        <div className="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
                             <Link
                                 href="/book-appointments"
-                                className="inline-flex items-center justify-center bg-white text-blue-900 font-bold py-4 px-10 rounded-xl transition-all shadow-lg hover:shadow-blue-500/20 hover:-translate-y-1 hover:bg-neutral-100"
+                                className="inline-flex items-center justify-center rounded-xl bg-white px-8 py-4 font-semibold text-blue-900 shadow-lg transition hover:-translate-y-0.5 hover:bg-blue-50"
                             >
                                 Book a Consultation
                             </Link>
                             <Link
                                 href={telLink}
-                                className="inline-flex items-center justify-center bg-transparent border-2 border-blue-400/30 text-white font-bold py-4 px-10 rounded-xl hover:bg-white/10 transition-all backdrop-blur-sm"
+                                className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/10 px-8 py-4 font-semibold text-white backdrop-blur-sm transition hover:bg-white/15"
                             >
-                                <span>Call Us Now</span>
+                                Call Us Now
                             </Link>
                         </div>
-                        <p className="mt-8 text-sm text-blue-300/60">
-                            Or email us at <a href={`mailto:${companyInfo?.email || 'vyskalegal@outlook.com'}`} className="text-blue-200">{companyInfo?.email || 'vyskalegal@outlook.com'}</a>
+                        <p className="mt-8 text-sm text-blue-200/80">
+                            Or email us at{" "}
+                            <a href={`mailto:${email}`} className="font-semibold text-white underline decoration-blue-300/40 underline-offset-4">
+                                {email}
+                            </a>
                         </p>
                     </div>
                 </div>
             </section>
-        </div>
+        </main>
     )
 }

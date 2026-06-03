@@ -192,12 +192,12 @@ async function main() {
             email: "vyskalegal@outlook.com",
             phone: "+91 96167 00999",
             whatsapp: "https://wa.me/919616700999",
-            address: "B-11, 1st Floor, Vinayak City Square, Sardar Patel Marg, Civil Lines, Prayagraj, UP 211001",
+            address: "B-11, 1st Floor, Vinayak City Square, Sardar Patel Marg, Civil Lines, Prayagraj, Uttar Pradesh 211001",
             yearsExperience: "10+", // Based on partners experience
             successRate: "98%",
             trustedClients: "200+",
             casesWon: "500+",
-            headOffice: "Prayagraj",
+            headOffice: "House No. 18A/K, Awadhpuri Colony, Muir Road, Allahabad Kty., Allahabad, Uttar Pradesh, India, 211002",
             mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3601.769717646636!2d81.833!3d25.45!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjXCsDI3JzAwLjAiTiA4McKwNTAnMDAuMCJF!5e0!3m2!1sen!2sin!4v1635764000000!5m2!1sen!2sin", // Placeholder map coord, user can update
             disclaimerMessage: "The rules of the Bar Council of India prohibit law firms from soliciting work or advertising in any manner. By clicking on \"I AGREE\", the user acknowledges that:",
             disclaimerPoints: [

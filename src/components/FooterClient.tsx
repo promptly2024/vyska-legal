@@ -3,6 +3,11 @@
 import Link from 'next/link'
 import { Instagram, Linkedin, MapPin, Clock, Phone, Mail, ArrowUpRight } from 'lucide-react'
 import { motion } from 'framer-motion'
+import {
+    DEFAULT_OFFICE_HOURS,
+    getPrayagrajOffice,
+    getRegisteredOffice,
+} from '@/lib/company-contact'
 
 interface CompanyInfo {
     id: string;
@@ -18,6 +23,9 @@ interface CompanyInfo {
 }
 
 export default function FooterClient({ companyInfo }: { companyInfo: CompanyInfo | null }) {
+    const registeredOffice = getRegisteredOffice(companyInfo);
+    const prayagrajOffice = getPrayagrajOffice(companyInfo);
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -212,12 +220,13 @@ export default function FooterClient({ companyInfo }: { companyInfo: CompanyInfo
                                 </div>
                                 <div>
                                     <h5 className="text-lg font-bold text-gray-900 mb-1">Visit Our Office</h5>
-                                    <p className="text-gray-600 text-sm leading-relaxed mb-3">
-                                        {companyInfo?.headOffice || companyInfo?.address || "New Delhi, Mumbai, Pune, Noida, Lucknow and Prayagraj"}
-                                    </p>
+                                    <div className="space-y-2 text-gray-600 text-sm leading-relaxed mb-3">
+                                        <p><span className="font-semibold text-gray-800">Registered Office:</span> {registeredOffice}</p>
+                                        <p><span className="font-semibold text-gray-800">Prayagraj Office:</span> {prayagrajOffice}</p>
+                                    </div>
                                     <div className="flex items-center gap-2 text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-full w-fit">
                                         <Clock size={14} />
-                                        <span>12:00 PM - 08:00 PM</span>
+                                        <span>{DEFAULT_OFFICE_HOURS}</span>
                                     </div>
                                 </div>
                             </div>
